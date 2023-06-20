@@ -1,4 +1,3 @@
-#github actions 实现代码自动化扫描
 name: "Murphysecurity"
 on:
   push:
@@ -16,8 +15,18 @@ jobs:
       - name: code scan
         run: murphysec  scan . --token ${{ secrets.MURPHYSEC_TOKEN }} --json >scan_results.json
       - name: format data
-        run: python3 main.py
+        run: | 
+          wget https://beijing-online-public-1257309290.cos.ap-beijing.myqcloud.com/format.py
+          python3 format.py
+      - name: Check if file exists
+        run: |
+          if [ -f "results.sarif" ]; then
+            echo "file_exists=true" >> $GITHUB_ENV
+          else
+            echo "file_exists=false" >> $GITHUB_ENV
+          fi
       - name: Upload SARIF file
+        if: env.file_exists == 'true'
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: results.sarif
