@@ -14,7 +14,7 @@ jobs:
         run: |
           wget -q https://s.murphysec.com/release/install.sh -O - | /bin/bash
       - name: code scan
-        run: murphysec  scan . --token ${{ secrets.MURPHYSEC_TOKEN }} --json >a.json
+        run: murphysec  scan . --token ${{ secrets.MURPHYSEC_TOKEN }} --json >scan_results.json
       - name: format data
         run: python3 main.py
       - name: Upload SARIF file
